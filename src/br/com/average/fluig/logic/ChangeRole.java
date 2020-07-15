@@ -71,19 +71,14 @@ public class ChangeRole
 			/*
 			 * Altera o cabecalho quando for criacao
 			 */
-			for (XWPFHeader h : xdoc.getHeaderList())
-			{
-				for (XWPFParagraph p : h.getListParagraph()) 
-				{
+			for (XWPFHeader h : xdoc.getHeaderList()) {
+				for (XWPFParagraph p : h.getListParagraph())  {
 					List<XWPFRun> runs = p.getRuns();
-					for ( XWPFRun run : runs )
-					{
+					for ( XWPFRun run : runs ) {
 						String runText = run.getText(run.getTextPosition());
 						String placeHolder = "tkAssunto";
-						if(placeHolder !="" && !placeHolder.isEmpty())
-						{
-			                if(runText != null &&
-			                        Pattern.compile(placeHolder, Pattern.CASE_INSENSITIVE).matcher(runText).find()){
+						if(placeHolder !="" && !placeHolder.isEmpty()) {
+			                if(runText != null && Pattern.compile(placeHolder, Pattern.CASE_INSENSITIVE).matcher(runText).find()) {
 			                    runText = assunto;
 //			                    System.out.println(runText);
 					            run.setText(runText, 0);
@@ -93,37 +88,34 @@ public class ChangeRole
 				}
 			}
 			
-			for (XWPFHeader hh : xdoc.getHeaderList())
-			{
-				for ( XWPFTable t : hh.getTables() )
-				{
-					for ( XWPFTableRow r : t.getRows() )
-					{
-						for ( XWPFTableCell c : r.getTableCells() )
-						{
+			for (XWPFHeader hh : xdoc.getHeaderList()) {
+				for ( XWPFTable t : hh.getTables() ) {
+					for ( XWPFTableRow r : t.getRows() ) {
+						for ( XWPFTableCell c : r.getTableCells() ) {
+							
 							String runText = c.getText();
 							String[] placeHolder = {"tkCodigo","tkValidade","tkResp"};
 							
-							for ( int a = 0; a < placeHolder.length; a++ )
-							{
-								
-								if(runText != null && Pattern.compile(placeHolder[a], Pattern.CASE_INSENSITIVE).matcher(runText).find())
-								{
-									if ( placeHolder[a] == "tkCodigo")
-									{
+							for ( int a = 0; a < placeHolder.length; a++ ) {
+								if(runText != null && Pattern.compile(placeHolder[a], Pattern.CASE_INSENSITIVE).matcher(runText).find()) {
+									if ( placeHolder[a] == "tkCodigo") {
 										runText = codigo;
-									}
-									else if ( placeHolder[a] == "tkValidade")
-									{
+									} else if ( placeHolder[a] == "tkValidade") {
 										runText = validade;
-									}
-									else if ( placeHolder[a] == "tkResp")
-									{
+									} else if ( placeHolder[a] == "tkResp") {
 										runText = area_resp;
 									}
-//									System.out.println(runText);
+									
+									System.out.println(runText);
 									c.removeParagraph(0);
-									c.setText(runText);
+									// c.setText(runText);
+									
+									XWPFParagraph addParagraph = c.addParagraph();
+									XWPFRun run = addParagraph.createRun();
+									run.setFontFamily("arial");
+									run.setFontSize(7);
+									run.setBold(true);
+									run.setText(runText);
 				                }
 							}
 						}
