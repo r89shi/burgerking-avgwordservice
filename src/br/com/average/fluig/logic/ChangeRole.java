@@ -58,6 +58,10 @@ public class ChangeRole
 			String[] per_ret = json.getPer_ret();
 			String[] aps_exp = json.getAps_exp();
 			
+			
+			String place = json.getPlace();
+			String processo = json.getProcesso();
+			
 			int tipo_sol = json.getTipo_sol();
 			
 			URL objURL = new URL(caminhoword);
@@ -94,7 +98,7 @@ public class ChangeRole
 						for ( XWPFTableCell c : r.getTableCells() ) {
 							
 							String runText = c.getText();
-							String[] placeHolder = {"tkCodigo","tkValidade","tkResp"};
+							String[] placeHolder = {"tkCodigo","tkValidade","tkResp","tkPlace","tkProcess"};
 							
 							for ( int a = 0; a < placeHolder.length; a++ ) {
 								if(runText != null && Pattern.compile(placeHolder[a], Pattern.CASE_INSENSITIVE).matcher(runText).find()) {
@@ -104,17 +108,23 @@ public class ChangeRole
 										runText = validade;
 									} else if ( placeHolder[a] == "tkResp") {
 										runText = area_resp;
+									} else if ( placeHolder[a] == "tkPlace") {
+										runText = place;
+									} else if ( placeHolder[a] == "tkProcess") {
+										runText = processo;
 									}
 									
-									System.out.println(runText);
+//									System.out.println(runText);
 									c.removeParagraph(0);
 									// c.setText(runText);
 									
 									XWPFParagraph addParagraph = c.addParagraph();
 									XWPFRun run = addParagraph.createRun();
-									run.setFontFamily("arial");
 									run.setFontSize(7);
 									run.setBold(true);
+									run.setFontFamily("Arial");
+//									run.getCTR().getRPr().getRFonts().setHAnsi("Arial");
+									
 									run.setText(runText);
 				                }
 							}

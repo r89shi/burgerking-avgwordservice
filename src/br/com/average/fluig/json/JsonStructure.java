@@ -25,6 +25,9 @@ public class JsonStructure {
 	private String[] per_ret;
 	private String[] aps_exp;
 	
+	private String place;
+	private String processo;
+	
 	private int tipo_sol;
 
 	public String getDocUrl() {
@@ -203,5 +206,16 @@ public class JsonStructure {
 		this.tipo_sol = tipo_sol;
 	}
 	
-	
+	public void setPlace(String place) {
+		this.place = place;
+	}
+	public String getPlace() {
+		return this.place;
+	}
+	public void setProcesso(String processo) {
+		this.processo = processo;
+	}
+	public String getProcesso() {
+		return this.processo;
+	}
 }
