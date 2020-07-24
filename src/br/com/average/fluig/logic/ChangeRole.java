@@ -162,11 +162,18 @@ public class ChangeRole
 			addText(table1, 1, 4, "Arial", "000000", "APROVADOR FINAL - CONSENSO", true, 6, "AEAAAA", "c");
 			addText(table1, 1, 5, "Arial", "000000", "APROVADOR FINAL - INT. OPERACIONAL", true, 6, "AEAAAA", "c");
 			
+			for (int i = 0; i < hiVersao.length; i++) {
+				String[] palavras = {
+						hiVersao[i], hiPublicacao[i], hiElaborador[i], hiArea[i], hiConsenso[i], hiOperacional[i]
+				};
+				createLine(table1, palavras, "Arial", "000000", false, 7);
+			}
+			
+			
 			XWPFParagraph para4 = xdoc.createParagraph();
 			XWPFRun run4 = para4.createRun();
 			run4.setFontSize(16);
 			run4.setBold(true);
-			run4.addBreak(BreakType.TEXT_WRAPPING);
 			run4.setText(" ");
 			
 			XWPFTable table2 = xdoc.createTable(2,3);
@@ -181,8 +188,12 @@ public class ChangeRole
 			table2.getRow(1).getCell(1).getCTTc().addNewTcPr().addNewTcW().setW(BigInteger.valueOf(1800));
 			table2.getRow(1).getCell(2).getCTTc().addNewTcPr().addNewTcW().setW(BigInteger.valueOf(8650));
 			
-			
-			
+			for (int i = 0; i < coVersao.length; i++) {
+				String[] palavras = {
+						coVersao[i], coPublicacao[i], coMotivo[i]
+				};
+				createLine(table2, palavras, "Arial", "000000", false, 7);
+			}
 			
 			
 			System.out.println("*====================== FIM DA EXECUCAO ========================*");
@@ -258,6 +269,23 @@ public class ChangeRole
 		r1.setFontFamily(fonte);
 		
 		r1.setText(texto);
+	}
+	
+	public void createLine(XWPFTable table, String[] valores, String fonte, String cor, Boolean bold, int fSize) {
+		XWPFTableRow line = table.createRow();
+		for (int i = 0; i < valores.length; i++) {
+			line.getCell(i).removeParagraph(0);
+			XWPFParagraph p1 = line.getCell(i).addParagraph();
+			p1.setAlignment(ParagraphAlignment.CENTER);
+			
+			XWPFRun r1 = p1.createRun();
+			r1.setFontSize(fSize);
+			r1.setBold(bold);
+			r1.setColor(cor);
+			r1.setFontFamily(fonte);
+			
+			r1.setText(valores[i]);
+		}
 	}
 	
 	public void mergeLine(XWPFTable table, int line, int span) {
