@@ -13,6 +13,7 @@ public class JsonStructure {
 	private String[] hiVersao;
 	private String[] hiPublicacao;
 	private String[] hiElaborador;
+	private String[] hiGestao;
 	private String[] hiArea;
 	private String[] hiConsenso;
 	private String[] hiOperacional;
@@ -120,6 +121,14 @@ public class JsonStructure {
 	
 	public String[] getHiArea() {
 		return hiArea;
+	}
+	
+	public void setHiGestao(String[] hiGestao) {
+		this.hiGestao = hiGestao;
+	}
+	
+	public String[] getHiGestao() {
+		return hiGestao;
 	}
 
 	public void setHiArea(String[] hiArea) {

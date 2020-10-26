@@ -45,6 +45,7 @@ public class ChangeRole
 
 			String[] hiVersao = json.getHiVersao();
 			String[] hiPublicacao = json.getHiPublicacao();
+			String[] hiGestao = json.getHiGestao();
 			String[] hiElaborador = json.getHiElaborador();
 			String[] hiArea = json.getHiArea();
 			String[] hiConsenso = json.getHiConsenso();
@@ -150,23 +151,24 @@ public class ChangeRole
 			run3.setText(" ");
 			
 			// Construcao da tabela de registros decorrentes
-			XWPFTable table1 = xdoc.createTable(2,6);
+			XWPFTable table1 = xdoc.createTable(2,7);
 			table1.setCellMargins(50, 0, 50, 0);
-			addText(table1, 0, 0, "Arial", "FFFFFF", "HISTÓRICO DE CRIAÇÃO/REVISÃO", true, 7, "0033CC", "c");
-			mergeLine(table1, 0, 6);
+			addText(table1, 0, 0, "Arial", "FFFFFF", "HISTÓRICO DE CRIAÇÃO/REVISÃO", true, 8, "0033CC", "c");
+			mergeLine(table1, 0, 7);
 			table1.getRow(0).getCell(0).getCTTc().addNewTcPr().addNewTcW().setW(BigInteger.valueOf(11200));
-			addText(table1, 1, 0, "Arial", "000000", "VERSÃO", true, 6, "AEAAAA", "c");
-			addText(table1, 1, 1, "Arial", "000000", "DATA DE PUBLICAÇÃO", true, 6, "AEAAAA", "c");
-			addText(table1, 1, 2, "Arial", "000000", "ELABORADOR", true, 6, "AEAAAA", "c");
-			addText(table1, 1, 3, "Arial", "000000", "APROVADOR FINAL - ÁREA", true, 6, "AEAAAA", "c");
-			addText(table1, 1, 4, "Arial", "000000", "APROVADOR FINAL - CONSENSO", true, 6, "AEAAAA", "c");
-			addText(table1, 1, 5, "Arial", "000000", "APROVADOR FINAL - INT. OPERACIONAL", true, 6, "AEAAAA", "c");
+			addText(table1, 1, 0, "Arial", "000000", "VERSÃO", true, 8, "EEECE1", "c");
+			addText(table1, 1, 1, "Arial", "000000", "DATA DE PUBLICAÇÃO", true, 8, "EEECE1", "c");
+			addText(table1, 1, 2, "Arial", "000000", "ELABORADOR", true, 8, "EEECE1", "c");
+			addText(table1, 1, 3, "Arial", "000000", "APROVADOR GESTÃO", true, 8, "EEECE1", "c");
+			addText(table1, 1, 4, "Arial", "000000", "APROVADOR FINAL - ÁREA", true, 8, "EEECE1", "c");
+			addText(table1, 1, 5, "Arial", "000000", "APROVADOR FINAL - CONSENSO", true, 8, "EEECE1", "c");
+			addText(table1, 1, 6, "Arial", "000000", "APROVADOR FINAL - INT. OPERACIONAL", true, 8, "EEECE1", "c");
 			
 			for (int i = 0; i < hiVersao.length; i++) {
 				String[] palavras = {
-						hiVersao[i], hiPublicacao[i], hiElaborador[i], hiArea[i], hiConsenso[i], hiOperacional[i]
+						hiVersao[i], hiPublicacao[i], hiGestao[i], hiElaborador[i], hiArea[i], hiConsenso[i], hiOperacional[i]
 				};
-				createLine(table1, palavras, "Arial", "000000", false, 7);
+				createLine(table1, palavras, "Arial", "000000", false, 8);
 			}
 			
 			
@@ -178,12 +180,12 @@ public class ChangeRole
 			
 			XWPFTable table2 = xdoc.createTable(2,3);
 			table2.setCellMargins(50, 0, 50, 0);
-			addText(table2, 0, 0, "Arial", "FFFFFF", "CONTROLE DE REVISÃO", true, 7, "ED7D31", "c");
+			addText(table2, 0, 0, "Arial", "FFFFFF", "CONTROLE DE REVISÃO", true, 8, "ED7D31", "c");
 			mergeLine(table2, 0, 3);
 			
-			addText(table2, 1, 0, "Arial", "000000", "VERSÃO", true, 6, "AEAAAA", "c");
-			addText(table2, 1, 1, "Arial", "000000", "DATA DE PUBLICAÇÃO", true, 6, "AEAAAA", "c");
-			addText(table2, 1, 2, "Arial", "000000", "MOTIVO", true, 6, "AEAAAA", "c");
+			addText(table2, 1, 0, "Arial", "000000", "VERSÃO", true, 8, "EEECE1", "c");
+			addText(table2, 1, 1, "Arial", "000000", "DATA DE PUBLICAÇÃO", true, 8, "EEECE1", "c");
+			addText(table2, 1, 2, "Arial", "000000", "MOTIVO", true, 8, "EEECE1", "c");
 			table2.getRow(1).getCell(0).getCTTc().addNewTcPr().addNewTcW().setW(BigInteger.valueOf(500));
 			table2.getRow(1).getCell(1).getCTTc().addNewTcPr().addNewTcW().setW(BigInteger.valueOf(1800));
 			table2.getRow(1).getCell(2).getCTTc().addNewTcPr().addNewTcW().setW(BigInteger.valueOf(8650));
@@ -192,7 +194,7 @@ public class ChangeRole
 				String[] palavras = {
 						coVersao[i], coPublicacao[i], coMotivo[i]
 				};
-				createLine(table2, palavras, "Arial", "000000", false, 7);
+				createLine(table2, palavras, "Arial", "000000", false, 8);
 			}
 			
 			
