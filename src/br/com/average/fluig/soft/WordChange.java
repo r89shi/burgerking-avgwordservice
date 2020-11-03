@@ -17,7 +17,7 @@ public class WordChange {
 	@Produces({MediaType.APPLICATION_JSON + ";charset=utf-8"})
 	public Response itsWorking()
 	{
-		return Response.ok().entity("Word webservice is working...").build();
+		return Response.ok().entity("Word webservice is working v 2.0...").build();
 	}
 	
 	@POST
