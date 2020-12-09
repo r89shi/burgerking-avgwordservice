@@ -26,13 +26,15 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.STMerge;
 
 import br.com.average.fluig.json.JsonStructure;
 
+import org.json.simple.JSONObject;
 
 public class ChangeRole
 {
-	public String changeWordContent(JsonStructure json)
+	public JSONObject changeWordContent(JsonStructure json)
 	{
-		try
-		{
+		JSONObject resp = new JSONObject();
+		
+		try {
 			String caminhoword = json.getDocUrl();
 			String caminho_salva = json.getCaminhoSalva();
 			
@@ -72,16 +74,22 @@ public class ChangeRole
 			/*
 			 * Altera o cabecalho quando for criacao
 			 */
+			
+			// Verifica se eh revisao
+			if ( tipo_sol == 1 ) {
+				substitui_tokens(xdoc);
+			}
+			
 			for (XWPFHeader h : xdoc.getHeaderList()) {
 				for (XWPFParagraph p : h.getListParagraph())  {
 					List<XWPFRun> runs = p.getRuns();
 					for ( XWPFRun run : runs ) {
 						String runText = run.getText(run.getTextPosition());
 						String placeHolder = "tkAssunto";
+						
 						if(placeHolder !="" && !placeHolder.isEmpty()) {
 			                if(runText != null && Pattern.compile(placeHolder, Pattern.CASE_INSENSITIVE).matcher(runText).find()) {
 			                    runText = assunto;
-//			                    System.out.println(runText);
 					            run.setText(runText, 0);
 			                }
 			            }
@@ -111,32 +119,18 @@ public class ChangeRole
 										runText = processo;
 									}
 									
-//									System.out.println(runText);
 									c.removeParagraph(0);
-									// c.setText(runText);
-									
 									XWPFParagraph addParagraph = c.addParagraph();
 									XWPFRun run = addParagraph.createRun();
 									run.setFontSize(7);
 									run.setBold(true);
 									run.setFontFamily("Arial");
-//									run.getCTR().getRPr().getRFonts().setHAnsi("Arial");
-									
 									run.setText(runText);
 				                }
 							}
 						}
 					}
 				}
-			}
-			
-			// Verifica se eh revisao
-			if ( tipo_sol == 1 )
-			{
-				// remove a tabela
-				altera_conteudo(xdoc);
-				// Altera a data
-				altera_data_revisao(xdoc, validade);
 			}
 			
 			/**
@@ -166,7 +160,7 @@ public class ChangeRole
 			
 			for (int i = 0; i < hiVersao.length; i++) {
 				String[] palavras = {
-						hiVersao[i], hiPublicacao[i], hiGestao[i], hiElaborador[i], hiArea[i], hiConsenso[i], hiOperacional[i]
+						hiVersao[i], hiPublicacao[i], hiElaborador[i], hiGestao[i], hiArea[i], hiConsenso[i], hiOperacional[i]
 				};
 				createLine(table1, palavras, "Arial", "000000", false, 8);
 			}
@@ -209,50 +203,17 @@ public class ChangeRole
 			System.out.println("*============================================================== caminho de gravacao");
 			System.out.println(caminho_salva);
 		}
-		catch(Exception e)
-		{
-			return "Ops, aconteceu um erro : " + e;
+		catch(Exception e) {
+			resp.put("code", "400");
+			resp.put("message", "Erro ao alterar word.");
+			resp.put("detail", e);
+			return resp;
 		}
 		
-		return "Word alterado";
-	}
-	
-	
-	/**
-	 * altera_conteudo
-	 * 
-	 * Remove a tabela e os paragrafos
-	 * 
-	 * @param doc
-	 */
-	public void altera_conteudo(XWPFDocument doc)
-	{
-		boolean confere = true;
-		int cont = 0;
+		resp.put("code", "200");
+		resp.put("message", "Word alterado com sucesso.");
 		
-		List<XWPFParagraph> pa = doc.getParagraphs();
-		List<XWPFTable> tables = doc.getTables();
-		
-		while(confere)
-		{
-			int pas = pa.size() - cont - 1;
-			int tbs = tables.size() - cont - 1;
-			
-			// Chama a funcao para apagar linha
-			d_para(pa.get(pas), doc);
-			
-			// Loop para apagar a tabela ate a 3 posicao
-			if ( cont != 4 )
-				d_table(tables.get(tbs), doc);
-			
-			// Stop do loop
-			if ( cont == 4 )
-			{
-				confere = false;
-				apar("Estouro no cont");
-			}
-			cont++;
-		}
+		return resp;
 	}
 	
 	public void addText(XWPFTable table, int linha, int coluna, String fonte, String cor, String texto, Boolean bold, int fSize, String cellColor, String textAlign) {
@@ -338,17 +299,67 @@ public class ChangeRole
 	public void altera_data_revisao(XWPFDocument doc , String nova_data)
 	{
 		System.out.println("Entrou na altera data");
-		for (XWPFHeader hh : doc.getHeaderList())
-		{
-			for ( XWPFTable t : hh.getTables() )
-			{
-				for ( XWPFTableRow r : t.getRows() )
-				{
+		for (XWPFHeader hh : doc.getHeaderList()) {
+			for ( XWPFTable t : hh.getTables() ) {
+				for ( XWPFTableRow r : t.getRows() ) {
 					List<XWPFTableCell> ltc = r.getTableCells();
 					ltc.get(3).removeParagraph(0);
 					ltc.get(3).setText(nova_data);
 				}
 			}
+		}
+	}
+	
+	public void setTextCell(XWPFTableRow r, int pos, String text) {
+		List<XWPFTableCell> ltc = r.getTableCells();
+		
+		ltc.get(pos).removeParagraph(0);
+		XWPFParagraph addParagraph = ltc.get(pos).addParagraph();
+		XWPFRun run = addParagraph.createRun();
+		run.setFontSize(7);
+		run.setBold(true);
+		run.setFontFamily("Arial");
+		run.setText(text);
+	}
+	
+	public void substitui_tokens(XWPFDocument doc) {
+		int a = 0;
+		for (XWPFHeader hh : doc.getHeaderList()) {
+			for ( XWPFTable t : hh.getTables() ) {
+				for ( XWPFTableRow r : t.getRows() ) {
+					if (a == 0) {
+						headerLine(hh);
+						setTextCell(r, 1, "tkCodigo");
+						setTextCell(r, 3, "tkValidade");
+						setTextCell(r, 5, "tkResp");
+					} if ( a == 1) {
+						setTextCell(r, 1, "tkPlace");
+						setTextCell(r, 3, "tkProcess");
+					}
+					a++;
+				}
+			}
+		}
+	}
+	
+	public void headerLine(XWPFHeader h) {
+		int a = 0;
+		for (XWPFParagraph p : h.getListParagraph())  {
+			List<XWPFRun> runs = p.getRuns();
+			
+			if (a == 1) {
+				for ( XWPFRun run : runs ) {
+					if ( a == 1 ) {
+						run.setText("                       ", 0);
+					} else if ( a == 2 ) {
+						run.setText("tkAssunto", 0);
+					} else {
+						run.setText("", 0);
+					}
+					a++;
+				}
+			}
+			a++;
 		}
 	}
 }
