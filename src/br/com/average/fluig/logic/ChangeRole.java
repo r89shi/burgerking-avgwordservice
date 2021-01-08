@@ -28,10 +28,8 @@ import br.com.average.fluig.json.JsonStructure;
 
 import org.json.simple.JSONObject;
 
-public class ChangeRole
-{
-	public JSONObject changeWordContent(JsonStructure json)
-	{
+public class ChangeRole {
+	public JSONObject changeWordContent(JsonStructure json) {
 		JSONObject resp = new JSONObject();
 		
 		try {
@@ -78,6 +76,12 @@ public class ChangeRole
 			// Verifica se eh revisao
 			if ( tipo_sol == 1 ) {
 				substitui_tokens(xdoc);
+				removeHistoryTables(xdoc);
+				
+//				resp.put("code", "201");
+//				resp.put("message", "Test 2 processing finished...");
+//				
+//				return resp;
 			}
 			
 			for (XWPFHeader h : xdoc.getHeaderList()) {
@@ -141,7 +145,7 @@ public class ChangeRole
 			XWPFRun run3 = para3.createRun();
 			run3.setFontSize(16);
 			run3.setBold(true);
-			run3.addBreak(BreakType.PAGE);
+//			run3.addBreak(BreakType.PAGE);
 			run3.setText(" ");
 			
 			// Construcao da tabela de registros decorrentes
@@ -262,7 +266,6 @@ public class ChangeRole
 		}
 	}
 	
-	
 	public void d_para(XWPFParagraph p, XWPFDocument xdoc)
 	{
 		int pPos = xdoc.getPosOfParagraph(p);
@@ -270,7 +273,6 @@ public class ChangeRole
 		CTBody ctb1 = ctb.getBody();
 		ctb1.removeP(pPos);
 	}
-	
 	
 	public void d_table(XWPFTable t, XWPFDocument xdoc)
 	{
@@ -280,24 +282,11 @@ public class ChangeRole
 		ctb1.removeTbl(pPos);
 	}
 	
-	
-	
-	public void apar(String mens)
-	{
+	public void apar(String mens) {
 		System.out.println(mens);
 	}
 	
-	
-	/**
-	 * validade
-	 * 
-	 * Altera o valor da data quando for revisao
-	 * 
-	 * @param doc XWPFDocument - input do documento word
-	 * @param nova_data String - nova data =
-	 */
-	public void altera_data_revisao(XWPFDocument doc , String nova_data)
-	{
+	public void altera_data_revisao(XWPFDocument doc , String nova_data) {
 		System.out.println("Entrou na altera data");
 		for (XWPFHeader hh : doc.getHeaderList()) {
 			for ( XWPFTable t : hh.getTables() ) {
@@ -360,6 +349,30 @@ public class ChangeRole
 				}
 			}
 			a++;
+		}
+	}
+
+	public void removeHistoryTables(XWPFDocument xdoc) {
+//		String text1 = "TB01HCR - HISTÓRICO DE CRIAÇÃO/REVISÃO";
+//		String text2 = "TB02CTR - CONTROLE DE REVISÃO";
+		
+		String text1 = "HISTÓRICO DE CRIAÇÃO/REVISÃO";
+		String text2 = "CONTROLE DE REVISÃO";
+		
+		// Remove tables
+		for (int a = (xdoc.getTables().size() - 1); a > 0 ; a--) {
+			XWPFTable t1 = xdoc.getTableArray(a);
+			String titulo = t1.getRow(0).getCell(0).getText();
+			
+			if( (titulo != null && Pattern.compile(text1, Pattern.CASE_INSENSITIVE).matcher(titulo).find()) || 
+					(titulo != null && Pattern.compile(text2, Pattern.CASE_INSENSITIVE).matcher(titulo).find()) ) {
+				
+				for (int b = (xdoc.getBodyElements().size() - 1); b > 0; b--) {
+					if ( xdoc.getBodyElements().get(b) == xdoc.getTableArray(a) ) {
+						xdoc.removeBodyElement(b);
+					}
+				}
+			}
 		}
 	}
 }
