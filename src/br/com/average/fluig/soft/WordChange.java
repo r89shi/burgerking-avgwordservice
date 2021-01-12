@@ -10,6 +10,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.json.simple.JSONObject;
+
 @Path("/WordWritter")
 public class WordChange {
 
@@ -17,7 +19,11 @@ public class WordChange {
 	@Produces({MediaType.APPLICATION_JSON + ";charset=utf-8"})
 	public Response itsWorking()
 	{
-		return Response.ok().entity("Word webservice is working...").build();
+		JSONObject resp = new JSONObject();
+		resp.put("code", "200");
+		resp.put("message", "Word webservice is working v 2.1");
+		
+		return Response.ok().entity(resp).build();
 	}
 	
 	@POST
@@ -25,7 +31,7 @@ public class WordChange {
 	@Produces({MediaType.APPLICATION_JSON + ";charset=utf-8"})
 	public Response escreveWord(JsonStructure json)
 	{
-		String alterarword = new ChangeRole().changeWordContent(json);
+		JSONObject alterarword = new ChangeRole().changeWordContent(json);
 		return Response.ok().entity(alterarword).build();
 	}
 }
