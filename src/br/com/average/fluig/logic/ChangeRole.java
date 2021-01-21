@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 
 import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.xwpf.usermodel.BreakType;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -63,6 +64,7 @@ public class ChangeRole {
 			
 			URL objURL = new URL(caminhoword);
 			InputStream arquivo = objURL.openStream();
+			ZipSecureFile.setMinInflateRatio(0);
 			
 			// Cria o documento com o conteudo do word aberto
 			XWPFDocument xdoc = new XWPFDocument( OPCPackage.open(arquivo));
